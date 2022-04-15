@@ -2,10 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>CryptoZombies front-end</title>
+    <title>Tool NFT front-end</title>
     <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="tool_abi.js"></script>
   </head>
   <body>
 
+    <script>
+      let tool;
+      function startApp() {
+        const toolAddress = "0x3215f99412a72f9660Aed1D8aE552e5876804693";
+        tool = new web3js.eth.Contract(toolABI, toolAddress);
+      }
+      window.addEventListener('load', function() {
+        if (typeof web3 !== 'undefined') {
+          web3js = new Web3(web3.currentProvider);
+        } else {
+        
+        }
+        startApp()
+      })
+    </script>
   </body>
 </html>
