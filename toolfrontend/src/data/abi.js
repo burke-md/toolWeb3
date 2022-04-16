@@ -1,4 +1,4 @@
-const toolABI = [ 
+export const toolABI = [ 
   {
     "inputs": [],
     "stateMutability": "nonpayable",
