@@ -12,17 +12,15 @@ const getTokenCount = async () => {
   return numTokens;
 }
 
-
 function App() {
   const [error, setError] = useState("");
   const [numMintedTokens, setNumMintedTokens] = useState(0);
+  const [connectedAddr, setConnectedAddr] = useState(null);
 
-const accounts = async() => {
-  await window.ethereum.request({ method: 'eth_requestAccounts' });
-};
-const account = accounts();
-console.log(account[0])
-
+window.ethereum.request({ method: 'eth_requestAccounts' })
+.then((res) => {
+  setConnectedAddr(res[0]);
+})
 
   useEffect(() => {
     getTokenCount()
@@ -34,7 +32,7 @@ console.log(account[0])
 
   const pauseContract = async () => {
     try {
-      await ToolContract.methods.pause().call({ from: account});
+      await ToolContract.methods.pause().send({ from: connectedAddr});
     } catch (err){
       setError("Unable to pause contract.")
     }
@@ -42,7 +40,7 @@ console.log(account[0])
 
   const unpauseContract = async () => {
     try {
-      await ToolContract.methods.unpause().call({ from: account});
+      await ToolContract.methods.unpause().call({ from: connectedAddr});
     } catch (err){
       setError("Unable to unpause contract.")
     }
