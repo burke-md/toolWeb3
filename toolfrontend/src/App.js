@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { toolABI } from './data/abi';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Alert, Button } from 'react-bootstrap';
 
 const web3 = new Web3(Web3.givenProvider);
 const contractAddress = "0x3215f99412a72f9660Aed1D8aE552e5876804693";
@@ -13,7 +15,7 @@ const getTokenCount = async () => {
 }
 
 function App() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [numMintedTokens, setNumMintedTokens] = useState(0);
   const [connectedAddr, setConnectedAddr] = useState(null);
 
@@ -29,7 +31,9 @@ window.ethereum.request({ method: 'eth_requestAccounts' })
     })
   }, []);
 
-
+  const clearError = () => {
+    setError(null);
+  }
   const pauseContract = async () => {
     try {
       await ToolContract.methods.pause().send({ from: connectedAddr});
@@ -40,7 +44,7 @@ window.ethereum.request({ method: 'eth_requestAccounts' })
 
   const unpauseContract = async () => {
     try {
-      await ToolContract.methods.unpause().call({ from: connectedAddr});
+      await ToolContract.methods.unpause().send({ from: connectedAddr});
     } catch (err){
       setError("Unable to unpause contract.")
     }
@@ -57,18 +61,32 @@ window.ethereum.request({ method: 'eth_requestAccounts' })
         There have been {numMintedTokens} Tool tokens created.
       </span>
       <br />
-      <span>
-        <button
-        onClick={pauseContract}
-        >Pause</button>
-        <button
-        onClick={unpauseContract}
-        >Unpause</button>
-      </span>
-      <br />
-      {error ?? <span>
-        An error has occured: {error}
-      </span>}
+      <Button
+      variant="outline-dark"
+      onClick={pauseContract}
+      >Pause</Button>
+
+      <Button
+      variant="outline-dark"
+      onClick={unpauseContract}
+      >Unpause</Button>
+
+      {error &&
+        <Alert
+        variant="danger">
+          <Alert.Heading>
+            An error has occured:
+          </Alert.Heading>
+          <hr />
+          <p>{error}</p>
+          <div className="d-flex justify-content-end">
+            <Button
+            variant="outline-danger"
+            onClick={clearError}
+            >X</Button>
+          </div>
+        </Alert>
+      }
     </div>
   );
 }
